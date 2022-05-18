@@ -161,32 +161,6 @@ function get_data() {
 			data[parseInt(key.split('-')[2])-1] = res['result']['checkin_data'][key]
 		}
 
-		var $chart = $('#chart-checkin-dark');
-		var CheckinChart = new Chart($chart, {
-			type: 'line',
-			options: {
-				scales: {
-					yAxes: [{
-						gridLines: {
-							color: Charts.colors.gray[700],
-							zeroLineColor: Charts.colors.gray[700]
-						},
-						ticks: {
-
-						}
-					}]
-				}
-			},
-			data: {
-				labels: labels,
-				datasets: [{
-					label: 'Số người điểm danh',
-					data: data
-				}]
-			}
-		});
-		$chart.data('chart', CheckinChart);
-
     })
 }
 
