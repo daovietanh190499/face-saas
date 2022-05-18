@@ -1,0 +1,87 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} List {% endblock title %}
+
+{% block content %}
+
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Danh sách đã đăng ký</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item"><a href="#">Danh sách đã đăng ký</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Danh sách đã đăng ký</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0">
+            <h3 class="mb-0">Danh sách người</h3>
+          </div>
+          <!-- Light table -->
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="sort" data-sort="id">Số thứ tự</th>
+                  <th scope="col" class="sort" data-sort="name">Tên người</th>
+                  <th scope="col" class="sort" data-sort="image">Ảnh của người</th>
+                  <th scope="col">Hành động</th>
+                </tr>
+              </thead>
+              <tbody class="list" id='children_list'>
+              </tbody>
+            </table>
+          </div>
+          <!-- Card footer -->
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade show" id="change-name" tabindex="-1" role="dialog" aria-labelledby="change-name-label" aria-modal="true">
+      <div class="modal-dialog modal-dialog-centered modal-secondary" role="document">
+        <div class="modal-content">
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div class="avatar-group" id="change-avatar" style="justify-content: center; align-items: center; display: flex;">
+            </div>
+            <form class="new-event--form">
+              <div class="form-group has-danger">
+                <label class="form-control-label">Tên người</label>
+                <input type="text" class="form-control form-control-alternative new-event--title" placeholder="Nhập tên người" id='change_name'>
+              </div>
+            </form>
+          </div>
+          <!-- Modal footer -->
+          <div class="modal-footer" id='change-footer'>
+            <button type="submit" class="btn btn-primary new-event--add">Thêm người</button>
+            <button type="button" class="btn btn-link ml-auto" data-dismiss="modal">Đóng</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include "includes/footer.html" %}
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+  <script src="/static/assets/js/index.js"></script>
+{% endblock javascripts %}

@@ -1,0 +1,12 @@
+# -*- encoding: utf-8 -*-
+"""
+Copyright (c) 2022 - VKIST
+"""
+
+from flask import Blueprint
+
+blueprint = Blueprint(
+    'face_recognition_blueprint',
+    __name__,
+    url_prefix=''
+)

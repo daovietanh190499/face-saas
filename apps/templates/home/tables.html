@@ -1,0 +1,89 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %} Tables {% endblock title %}
+
+{% block content %}
+
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Điểm danh</h6>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+              <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+                <li class="breadcrumb-item"><a href="#"><i class="fas fa-home"></i></a></li>
+                <li class="breadcrumb-item"><a href="#">Điểm danh</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Điểm danh</li>
+              </ol>
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+
+    <div class="row">
+      <div class="col">
+        <div class="card bg-default">
+          <div class="card-header bg-transparent">
+            <div class="row align-items-center">
+              <div class="col">
+                <h6 class="text-light text-uppercase ls-1 mb-1">Tổng quan</h6>
+                <h5 class="h3 text-white mb-0">Thống kê điểm danh theo ngày</h5>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Chart -->
+            <div class="chart">
+              <!-- Chart wrapper -->
+              <canvas id="chart-checkin-dark" class="chart-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <!-- Card header -->
+          <div class="card-header border-0">
+            <h3 class="mb-0">Điểm danh</h3>
+          </div>
+          <!-- Light table -->
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col" class="sort" data-sort="id">Số thứ tự</th>
+                  <th scope="col" class="sort" data-sort="name">Tên người</th>
+                  <th scope="col" class="sort" data-sort="image">Ảnh của người</th>
+                  <th scope="col" class="sort" data-sort="status">Trạng thái điểm danh</th>
+                  <th scope="col" class="sort" data-sort="timestamp">Thời gian</th>
+                </tr>
+              </thead>
+              <tbody class="list" id='current_checkin'>
+              </tbody>
+            </table>
+          </div>
+          <!-- Card footer -->
+        </div>
+      </div>
+    </div>
+    {% include "includes/footer.html" %}
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+  <script src="/static/assets/js/components/init/chart-init.js"></script>
+  <script src="/static/assets/js/index.js"></script>
+{% endblock javascripts %}

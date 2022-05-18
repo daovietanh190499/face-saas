@@ -1,0 +1,187 @@
+{% extends 'layouts/base-parent.html' %}
+
+{% block title %} List {% endblock title %}
+
+{% block content %}
+
+  <div class="header bg-primary pb-6">
+    <div class="container-fluid">
+      <div class="header-body">
+        <div class="row align-items-center py-4">
+          <div class="col-lg-6 col-7">
+            <h6 class="h2 text-white d-inline-block mb-0">Theo dõi người</h6>
+          </div>
+        </div>
+
+        <div class="row">
+            <div class="col-xl-3 col-md-6">
+                <div class="card card-stats">
+                    <!-- Card body -->
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col">
+                                <h5 class="card-title text-uppercase text-muted mb-0">Tên người</h5>
+                                <span class="h2 font-weight-bold mb-0">{{person_info.name}}</span>
+                            </div>
+                            <div class="col-auto">
+                              <div class="avatar-group">
+                                <a href="#" class="avatar avatar-lg rounded-circle" data-toggle="tooltip" data-original-title="{{person_info.name}}">
+                                    <img alt="{{person_info.name}}" src="/image/{{secret_key}}/{{person_info.image_id}}">
+                                </a>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6">
+              <div class="card card-stats">
+                  <!-- Card body -->
+                  <div class="card-body">
+                      <div class="row">
+                          <div class="col">
+                              <h5 class="card-title text-uppercase text-muted mb-0">Số ngày điểm danh</h5>
+                              <span class="h2 font-weight-bold mb-0">{{person_info.number_of_checkin}}</span>
+                          </div>
+                          <div class="col-auto">
+                            <div class="icon icon-shape bg-gradient-green text-white rounded-circle shadow">
+                              <i class="ni ni-chart-pie-35"></i>
+                            </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Page content -->
+  <div class="container-fluid mt--6">
+
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <div class="card-header bg-transparent">
+            <div class="row align-items-center">
+              <div class="col">
+                <h6 class="text-default text-uppercase ls-1 mb-1">Tổng quan</h6>
+                <h5 class="h3 text-default mb-0">Tỷ lệ điểm danh</h5>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <!-- Chart -->
+            <div class="chart">
+              <!-- Chart wrapper -->
+              <canvas id="chart-pie" class="chart-canvas"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <!-- Fullcalendar -->
+        <div class="card card-calendar">
+          <!-- Card header -->
+          <div class="card-header">
+            <!-- Title -->
+            <h5 class="h3 mb-0">Lịch sử điểm danh</h5>
+          </div>
+          <!-- Card body -->
+          <div class="card-body p-0">
+            <div class="calendar fc fc-unthemed fc-ltr" data-toggle="calendar" id="calendar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      {% for image in full_images %}
+        <div class="col-xl-6">
+          <img class="card-img" src="/full_image/{{secret_key}}/{{image}}">
+        </div>
+      {% endfor %}
+    </div>
+
+    {% include "includes/footer.html" %}
+
+  </div>
+
+{% endblock content %}
+
+<!-- Specific JS goes HERE --> 
+{% block javascripts %}
+  <script>
+    var events = {{checkin_array|tojson}}
+    var num_day = {{work_days}}
+    var person_info = {{person_info|tojson}}
+  </script>
+  <script src="/static/assets/js/components/init/chart-init.js"></script>
+  <script>
+    var PieChart = (function() {
+
+    // Variables
+
+    var $chart = $('#chart-pie');
+
+
+    // Methods
+
+    function init($this) {
+      var randomScalingFactor = function() {
+        return Math.round(Math.random() * 100);
+      };
+
+      var pieChart = new Chart($this, {
+        type: 'pie',
+        data: {
+          labels: [
+            'Chưa điểm danh',
+            'Đã điểm danh',
+          ],
+          datasets: [{
+            data: [
+              1 - person_info['number_of_checkin']/num_day,
+              person_info['number_of_checkin']/num_day,
+            ],
+            backgroundColor: [
+              Charts.colors.theme['warning'],
+              Charts.colors.theme['success'],
+            ],
+            label: 'Tỷ lệ điểm danh'
+          }],
+        },
+        options: {
+          responsive: true,
+          legend: {
+            position: 'top',
+          },
+          animation: {
+            animateScale: true,
+            animateRotate: true
+          }
+        }
+      });
+
+      // Save to jQuery object
+
+      $this.data('chart', pieChart);
+
+    };
+
+
+    // Events
+
+    if ($chart.length) {
+      init($chart);
+    }
+
+    })();
+  </script>
+  <script src="/static/assets/js/index.js"></script>
+{% endblock javascripts %}

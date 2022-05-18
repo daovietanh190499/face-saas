@@ -1,0 +1,49 @@
+version: '3.3'
+services:
+  face_saas_vkist:
+    container_name: face_saas_vkist
+    restart: always
+    env_file: .env
+    build: .
+    networks:
+      - redis_network
+      - db_network
+      - web_network
+    volumes:
+      - /home/data/:/home/data/
+    depends_on:
+      - cache
+    links:
+      - cache
+    environment:
+      REDIS_HOST: cache
+      REDIS_PORT: 6379
+  cache:
+    image: redis:latest
+    restart: always
+    ports:
+      - "6379:6379"
+    command: ["redis-server", "--bind", "cache", "--port", "6379"]
+    volumes:
+      - /home/data/cache/:/data
+    networks:
+      - redis_network
+  nginx:
+    container_name: nginx
+    restart: always
+    image: "nginx:latest"
+    ports:
+      - "85:85"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+    networks:
+      - web_network
+    depends_on: 
+      - face_saas_vkist
+networks:
+  redis_network:
+    driver: bridge
+  db_network:
+    driver: bridge
+  web_network:
+    driver: bridge
