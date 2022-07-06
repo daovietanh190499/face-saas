@@ -215,7 +215,7 @@ def data():
     key_instance = SecretKeys.query.filter_by(user_id=current_user.id).first()
     secret_key = key_instance.secret_key
 
-    people_array = db.session.query(DefineImages.person_id, func.count(DefineImages.person_id), Images.image_id, People.name, People.access_key)\
+    people_array = db.session.query(DefineImages.person_id, Images.image_id, People.name, People.access_key)\
               .filter(DefineImages.user_id==current_user.id)\
               .filter(People.id==DefineImages.person_id)\
               .filter(Images.id==DefineImages.embedding_id)\
@@ -227,19 +227,19 @@ def data():
               .filter(Images.person_id!=-1)\
               .filter(People.id==Images.person_id)\
               .filter(Images.timestamp >= datetime.datetime.utcnow().strftime('%Y-%m-%d'))\
+              .group_by(Images.person_id, Images.image_id, People.name, People.access_key)\
               .all()
     if not current_checkin:
         current_checkin = []
     
     people_array_ = {}
     for u in people_array:
-        people_array_[str(u[0])] = {'name': u[3], 'image_id': u[2], 'timestamp': '--', 'access_key':u[4], 'checkin': False}
+        people_array_[str(u[0])] = {'name': u[2], 'image_id': u[1], 'timestamp': '--', 'access_key':u[3], 'checkin': False}
     for u in current_checkin:
         people_array_[str(u[0])] = {'name': u[3], 'image_id': u[2], 'timestamp': str(u[1]), 'access_key':u[4], 'checkin': True}
+    
+    number_of_current_checkin = len(current_checkin)
     current_checkin = [people_array_[u] for u in people_array_.keys()]
-    number_of_current_checkin = 0
-    for ckin in current_checkin:
-        number_of_current_checkin += 1 if ckin['checkin'] else 0
     number_of_people = len(current_checkin)
 
     current_timeline = db.session.query(Images.person_id, Images.timestamp, Images.image_id, People.name)\
@@ -260,26 +260,26 @@ def data():
 
     strangers = [{'image_id': u[2], 'timestamp': str(u[1])} for u in strangers]
 
-#     day = calendar.monthrange(datetime.datetime.utcnow().year, datetime.datetime.utcnow().month)[1]
-#     checkin_data = {}
-#     for i in range(1, day+1):
-#         begin_day = datetime.datetime.utcnow().replace(day=i).strftime("%Y-%m-%d")
-#         if i != day:
-#             end_day = datetime.datetime.utcnow().replace(day=i+1).strftime("%Y-%m-%d")
-#         else:
-#             end_day = datetime.datetime.utcnow().replace(day=1).replace(month=datetime.datetime.utcnow().month).strftime("%Y-%m-%d")
-#         checkin = db.session.query(Images.person_id, Images.timestamp, func.count(Images.id))\
-#                 .filter(Images.user_id==current_user.id)\
-#                 .filter(Images.person_id!=-1)\
-#                 .filter(People.id==Images.person_id)\
-#                 .filter(Images.timestamp >= begin_day)\
-#                 .filter(Images.timestamp < end_day)\
-#                 .group_by(Images.person_id, Images.timestamp)\
-#                 .all()
-#         checkin_array_ = {}
-#         for u in checkin:
-#             checkin_array_[str(u[0])] = 1
-#         checkin_data[begin_day] = len(checkin_array_.keys())
+    # day = calendar.monthrange(datetime.datetime.utcnow().year, datetime.datetime.utcnow().month)[1]
+    # checkin_data = {}
+    # for i in range(1, day+1):
+    #     begin_day = datetime.datetime.utcnow().replace(day=i).strftime("%Y-%m-%d")
+    #     if i != day:
+    #         end_day = datetime.datetime.utcnow().replace(day=i+1).strftime("%Y-%m-%d")
+    #     else:
+    #         end_day = datetime.datetime.utcnow().replace(day=1).replace(month=datetime.datetime.utcnow().month).strftime("%Y-%m-%d")
+    #     checkin = db.session.query(Images.person_id, Images.timestamp, func.count(Images.id))\
+    #             .filter(Images.user_id==current_user.id)\
+    #             .filter(Images.person_id!=-1)\
+    #             .filter(People.id==Images.person_id)\
+    #             .filter(Images.timestamp >= begin_day)\
+    #             .filter(Images.timestamp < end_day)\
+    #             .group_by(Images.person_id, Images.timestamp)\
+    #             .all()
+    #     checkin_array_ = {}
+    #     for u in checkin:
+    #         checkin_array_[str(u[0])] = 1
+    #     checkin_data[begin_day] = len(checkin_array_.keys())
 
     return jsonify({
         "result": {
@@ -288,8 +288,8 @@ def data():
             'current_checkin': current_checkin,
             'number_of_current_checkin': number_of_current_checkin,
             'current_timeline': current_timeline,
-            'strangers': strangers
-#             'checkin_data': checkin_data
+            'strangers': strangers,
+            # 'checkin_data': checkin_data
         }
     }), 200
 
